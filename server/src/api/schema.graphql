@@ -1,0 +1,96 @@
+# import * from '../generated/prisma.graphql'
+
+type Query {
+  me: User
+}
+
+type Subscription {
+  DriversSubscriptions: DriversSubscriptionPayload
+}
+
+type DriversSubscriptionPayload {
+  mutation: MutationType
+  node: User
+  updatedFields: [String!]
+  previousValues: UserPreviousValues
+}
+
+type Mutation {
+  createUser(
+    firstName: String!
+    lastName: String
+    email: String
+    password: String!
+    age: Int
+    avatar: String
+  ): CreateUserResponse!
+}
+
+type requestResetResponse {
+  ok: Boolean!
+  error: String
+  message: String
+}
+type resetPasswordResponse {
+  ok: Boolean!
+  error: String
+  token: String
+  successMessage: String
+}
+
+type updateMyprofileResponse {
+  ok: Boolean!
+  error: String
+  token: String
+}
+type verifyEmailResponse {
+  ok: Boolean!
+  error: String
+  token: String
+  user: User
+}
+
+type RequestEmailVerificationResponse {
+  ok: Boolean!
+  error: String
+}
+type CreateUserResponse {
+  ok: Boolean!
+  error: String
+  token: String
+  user: User
+}
+type LoginUserResponse {
+  ok: Boolean!
+  error: String
+  token: String
+  user: User
+}
+
+type Message {
+  message: String
+}
+
+type CreateUser {
+  firstName: String!
+  lastName: String
+  email: String!
+  password: String!
+}
+
+type LoginUser {
+  email: String!
+  password: String!
+}
+type LogoutUser {
+  Message: Message
+}
+
+type RequestReset {
+  email: String
+}
+type ResetPassword {
+  token: String!
+  password: String!
+  confirmPassword: String!
+}

@@ -1,0 +1,24 @@
+{
+  "name": "prismagramclient",
+  "version": "1.0.0",
+  "description": "intsagram clone ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/imran-ib/prisma-gram.git"
+  },
+  "keywords": [
+    "instagram",
+    "prisma",
+    "graphql"
+  ],
+  "author": "Imran Irshad",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/imran-ib/prisma-gram/issues"
+  },
+  "homepage": "https://github.com/imran-ib/prisma-gram#readme"
+}

@@ -17,80 +17,29 @@ type DriversSubscriptionPayload {
 
 type Mutation {
   createUser(
-    firstName: String!
+    username: String!
+    email: String!
+    firstName: String
     lastName: String
-    email: String
-    password: String!
-    age: Int
     avatar: String
+    bio: String
   ): CreateUserResponse!
+  requestLoginSecrete(email: String!): requestLoginSecreteResponse!
+  confirmSecretLogin(email: String!, key: String!): confirmSecretLoginRespponse!
 }
 
-type requestResetResponse {
-  ok: Boolean!
-  error: String
-  message: String
-}
-type resetPasswordResponse {
-  ok: Boolean!
-  error: String
-  token: String
-  successMessage: String
-}
-
-type updateMyprofileResponse {
+type confirmSecretLoginRespponse {
   ok: Boolean!
   error: String
   token: String
 }
-type verifyEmailResponse {
+type requestLoginSecreteResponse {
   ok: Boolean!
   error: String
-  token: String
-  user: User
 }
 
-type RequestEmailVerificationResponse {
-  ok: Boolean!
-  error: String
-}
 type CreateUserResponse {
   ok: Boolean!
   error: String
-  token: String
   user: User
-}
-type LoginUserResponse {
-  ok: Boolean!
-  error: String
-  token: String
-  user: User
-}
-
-type Message {
-  message: String
-}
-
-type CreateUser {
-  firstName: String!
-  lastName: String
-  email: String!
-  password: String!
-}
-
-type LoginUser {
-  email: String!
-  password: String!
-}
-type LogoutUser {
-  Message: Message
-}
-
-type RequestReset {
-  email: String
-}
-type ResetPassword {
-  token: String!
-  password: String!
-  confirmPassword: String!
 }

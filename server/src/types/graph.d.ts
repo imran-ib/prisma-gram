@@ -84,19 +84,17 @@ export type CommentWhereInput = {
   post?: Maybe<PostWhereInput>;
 };
 
-export type CreateUser = {
-   __typename?: 'CreateUser';
-  firstName: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  password: Scalars['String'];
+export type ConfirmSecretLoginRespponse = {
+   __typename?: 'confirmSecretLoginRespponse';
+  ok: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
+  token?: Maybe<Scalars['String']>;
 };
 
 export type CreateUserResponse = {
    __typename?: 'CreateUserResponse';
   ok: Scalars['Boolean'];
   error?: Maybe<Scalars['String']>;
-  token?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
 };
 
@@ -236,28 +234,15 @@ export type LikeWhereInput = {
   post?: Maybe<PostWhereInput>;
 };
 
-export type LoginUser = {
-   __typename?: 'LoginUser';
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type LoginUserResponse = {
-   __typename?: 'LoginUserResponse';
-  ok: Scalars['Boolean'];
-  error?: Maybe<Scalars['String']>;
-  token?: Maybe<Scalars['String']>;
-  user?: Maybe<User>;
-};
-
-export type LogoutUser = {
-   __typename?: 'LogoutUser';
-  Message?: Maybe<Message>;
-};
-
-export type Message = {
+export type Message = Node & {
    __typename?: 'Message';
-  message?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  text: Scalars['String'];
+  from: User;
+  to: User;
+  room: Room;
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export enum MessageOrderByInput {
@@ -327,16 +312,29 @@ export type MessageWhereInput = {
 export type Mutation = {
    __typename?: 'Mutation';
   createUser: CreateUserResponse;
+  requestLoginSecrete: RequestLoginSecreteResponse;
+  confirmSecretLogin: ConfirmSecretLoginRespponse;
 };
 
 
 export type MutationCreateUserArgs = {
-  firstName: Scalars['String'];
+  username: Scalars['String'];
+  email: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  password: Scalars['String'];
-  age?: Maybe<Scalars['Int']>;
   avatar?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationRequestLoginSecreteArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationConfirmSecretLoginArgs = {
+  email: Scalars['String'];
+  key: Scalars['String'];
 };
 
 export enum MutationType {
@@ -487,37 +485,10 @@ export type Query = {
   me?: Maybe<User>;
 };
 
-export type RequestEmailVerificationResponse = {
-   __typename?: 'RequestEmailVerificationResponse';
+export type RequestLoginSecreteResponse = {
+   __typename?: 'requestLoginSecreteResponse';
   ok: Scalars['Boolean'];
   error?: Maybe<Scalars['String']>;
-};
-
-export type RequestReset = {
-   __typename?: 'RequestReset';
-  email?: Maybe<Scalars['String']>;
-};
-
-export type RequestResetResponse = {
-   __typename?: 'requestResetResponse';
-  ok: Scalars['Boolean'];
-  error?: Maybe<Scalars['String']>;
-  message?: Maybe<Scalars['String']>;
-};
-
-export type ResetPassword = {
-   __typename?: 'ResetPassword';
-  token: Scalars['String'];
-  password: Scalars['String'];
-  confirmPassword: Scalars['String'];
-};
-
-export type ResetPasswordResponse = {
-   __typename?: 'resetPasswordResponse';
-  ok: Scalars['Boolean'];
-  error?: Maybe<Scalars['String']>;
-  token?: Maybe<Scalars['String']>;
-  successMessage?: Maybe<Scalars['String']>;
 };
 
 export type Room = Node & {
@@ -605,13 +576,6 @@ export type RoomWhereInput = {
 export type Subscription = {
    __typename?: 'Subscription';
   DriversSubscriptions?: Maybe<DriversSubscriptionPayload>;
-};
-
-export type UpdateMyprofileResponse = {
-   __typename?: 'updateMyprofileResponse';
-  ok: Scalars['Boolean'];
-  error?: Maybe<Scalars['String']>;
-  token?: Maybe<Scalars['String']>;
 };
 
 export type User = Node & {
@@ -889,14 +853,6 @@ export type UserWhereInput = {
   rooms_none?: Maybe<RoomWhereInput>;
 };
 
-export type VerifyEmailResponse = {
-   __typename?: 'verifyEmailResponse';
-  ok: Scalars['Boolean'];
-  error?: Maybe<Scalars['String']>;
-  token?: Maybe<Scalars['String']>;
-  user?: Maybe<User>;
-};
-
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -972,7 +928,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>,
   User: ResolverTypeWrapper<User>,
-  Node: ResolversTypes['User'] | ResolversTypes['Post'] | ResolversTypes['File'] | ResolversTypes['Like'] | ResolversTypes['Comment'] | ResolversTypes['Room'],
+  Node: ResolversTypes['User'] | ResolversTypes['Post'] | ResolversTypes['File'] | ResolversTypes['Like'] | ResolversTypes['Comment'] | ResolversTypes['Room'] | ResolversTypes['Message'],
   ID: ResolverTypeWrapper<Scalars['ID']>,
   String: ResolverTypeWrapper<Scalars['String']>,
   UserWhereInput: UserWhereInput,
@@ -1000,28 +956,19 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>,
   CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  requestLoginSecreteResponse: ResolverTypeWrapper<RequestLoginSecreteResponse>,
+  confirmSecretLoginRespponse: ResolverTypeWrapper<ConfirmSecretLoginRespponse>,
   Subscription: ResolverTypeWrapper<{}>,
   DriversSubscriptionPayload: ResolverTypeWrapper<DriversSubscriptionPayload>,
   MutationType: MutationType,
   UserPreviousValues: ResolverTypeWrapper<UserPreviousValues>,
-  requestResetResponse: ResolverTypeWrapper<RequestResetResponse>,
-  resetPasswordResponse: ResolverTypeWrapper<ResetPasswordResponse>,
-  updateMyprofileResponse: ResolverTypeWrapper<UpdateMyprofileResponse>,
-  verifyEmailResponse: ResolverTypeWrapper<VerifyEmailResponse>,
-  RequestEmailVerificationResponse: ResolverTypeWrapper<RequestEmailVerificationResponse>,
-  LoginUserResponse: ResolverTypeWrapper<LoginUserResponse>,
-  CreateUser: ResolverTypeWrapper<CreateUser>,
-  LoginUser: ResolverTypeWrapper<LoginUser>,
-  LogoutUser: ResolverTypeWrapper<LogoutUser>,
-  RequestReset: ResolverTypeWrapper<RequestReset>,
-  ResetPassword: ResolverTypeWrapper<ResetPassword>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {},
   User: User,
-  Node: ResolversParentTypes['User'] | ResolversParentTypes['Post'] | ResolversParentTypes['File'] | ResolversParentTypes['Like'] | ResolversParentTypes['Comment'] | ResolversParentTypes['Room'],
+  Node: ResolversParentTypes['User'] | ResolversParentTypes['Post'] | ResolversParentTypes['File'] | ResolversParentTypes['Like'] | ResolversParentTypes['Comment'] | ResolversParentTypes['Room'] | ResolversParentTypes['Message'],
   ID: Scalars['ID'],
   String: Scalars['String'],
   UserWhereInput: UserWhereInput,
@@ -1049,21 +996,12 @@ export type ResolversParentTypes = {
   Mutation: {},
   CreateUserResponse: CreateUserResponse,
   Boolean: Scalars['Boolean'],
+  requestLoginSecreteResponse: RequestLoginSecreteResponse,
+  confirmSecretLoginRespponse: ConfirmSecretLoginRespponse,
   Subscription: {},
   DriversSubscriptionPayload: DriversSubscriptionPayload,
   MutationType: MutationType,
   UserPreviousValues: UserPreviousValues,
-  requestResetResponse: RequestResetResponse,
-  resetPasswordResponse: ResetPasswordResponse,
-  updateMyprofileResponse: UpdateMyprofileResponse,
-  verifyEmailResponse: VerifyEmailResponse,
-  RequestEmailVerificationResponse: RequestEmailVerificationResponse,
-  LoginUserResponse: LoginUserResponse,
-  CreateUser: CreateUser,
-  LoginUser: LoginUser,
-  LogoutUser: LogoutUser,
-  RequestReset: RequestReset,
-  ResetPassword: ResetPassword,
 };
 
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
@@ -1076,18 +1014,16 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type CreateUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateUser'] = ResolversParentTypes['CreateUser']> = {
-  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+export type ConfirmSecretLoginRespponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['confirmSecretLoginRespponse'] = ResolversParentTypes['confirmSecretLoginRespponse']> = {
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export type CreateUserResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateUserResponse'] = ResolversParentTypes['CreateUserResponse']> = {
   ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
@@ -1122,36 +1058,25 @@ export type LikeResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type LoginUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginUser'] = ResolversParentTypes['LoginUser']> = {
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
-export type LoginUserResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginUserResponse'] = ResolversParentTypes['LoginUserResponse']> = {
-  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
-export type LogoutUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['LogoutUser'] = ResolversParentTypes['LogoutUser']> = {
-  Message?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
 export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = {
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  from?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  to?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  room?: Resolver<ResolversTypes['Room'], ParentType, ContextType>,
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createUser?: Resolver<ResolversTypes['CreateUserResponse'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'firstName' | 'password'>>,
+  createUser?: Resolver<ResolversTypes['CreateUserResponse'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'username' | 'email'>>,
+  requestLoginSecrete?: Resolver<ResolversTypes['requestLoginSecreteResponse'], ParentType, ContextType, RequireFields<MutationRequestLoginSecreteArgs, 'email'>>,
+  confirmSecretLogin?: Resolver<ResolversTypes['confirmSecretLoginRespponse'], ParentType, ContextType, RequireFields<MutationConfirmSecretLoginArgs, 'email' | 'key'>>,
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'User' | 'Post' | 'File' | 'Like' | 'Comment' | 'Room', ParentType, ContextType>,
+  __resolveType: TypeResolveFn<'User' | 'Post' | 'File' | 'Like' | 'Comment' | 'Room' | 'Message', ParentType, ContextType>,
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
 };
 
@@ -1172,36 +1097,9 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
 };
 
-export type RequestEmailVerificationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RequestEmailVerificationResponse'] = ResolversParentTypes['RequestEmailVerificationResponse']> = {
+export type RequestLoginSecreteResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['requestLoginSecreteResponse'] = ResolversParentTypes['requestLoginSecreteResponse']> = {
   ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
-export type RequestResetResolvers<ContextType = any, ParentType extends ResolversParentTypes['RequestReset'] = ResolversParentTypes['RequestReset']> = {
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
-export type RequestResetResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['requestResetResponse'] = ResolversParentTypes['requestResetResponse']> = {
-  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
-export type ResetPasswordResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResetPassword'] = ResolversParentTypes['ResetPassword']> = {
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  confirmPassword?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
-export type ResetPasswordResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['resetPasswordResponse'] = ResolversParentTypes['resetPasswordResponse']> = {
-  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  successMessage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
@@ -1216,13 +1114,6 @@ export type RoomResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   DriversSubscriptions?: SubscriptionResolver<Maybe<ResolversTypes['DriversSubscriptionPayload']>, "DriversSubscriptions", ParentType, ContextType>,
-};
-
-export type UpdateMyprofileResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['updateMyprofileResponse'] = ResolversParentTypes['updateMyprofileResponse']> = {
-  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -1259,41 +1150,24 @@ export type UserPreviousValuesResolvers<ContextType = any, ParentType extends Re
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
-export type VerifyEmailResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['verifyEmailResponse'] = ResolversParentTypes['verifyEmailResponse']> = {
-  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
 export type Resolvers<ContextType = any> = {
   Comment?: CommentResolvers<ContextType>,
-  CreateUser?: CreateUserResolvers<ContextType>,
+  confirmSecretLoginRespponse?: ConfirmSecretLoginRespponseResolvers<ContextType>,
   CreateUserResponse?: CreateUserResponseResolvers<ContextType>,
   DateTime?: GraphQLScalarType,
   DriversSubscriptionPayload?: DriversSubscriptionPayloadResolvers<ContextType>,
   File?: FileResolvers<ContextType>,
   Like?: LikeResolvers<ContextType>,
-  LoginUser?: LoginUserResolvers<ContextType>,
-  LoginUserResponse?: LoginUserResponseResolvers<ContextType>,
-  LogoutUser?: LogoutUserResolvers<ContextType>,
   Message?: MessageResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Node?: NodeResolvers,
   Post?: PostResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
-  RequestEmailVerificationResponse?: RequestEmailVerificationResponseResolvers<ContextType>,
-  RequestReset?: RequestResetResolvers<ContextType>,
-  requestResetResponse?: RequestResetResponseResolvers<ContextType>,
-  ResetPassword?: ResetPasswordResolvers<ContextType>,
-  resetPasswordResponse?: ResetPasswordResponseResolvers<ContextType>,
+  requestLoginSecreteResponse?: RequestLoginSecreteResponseResolvers<ContextType>,
   Room?: RoomResolvers<ContextType>,
   Subscription?: SubscriptionResolvers<ContextType>,
-  updateMyprofileResponse?: UpdateMyprofileResponseResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
   UserPreviousValues?: UserPreviousValuesResolvers<ContextType>,
-  verifyEmailResponse?: VerifyEmailResponseResolvers<ContextType>,
 };
 
 

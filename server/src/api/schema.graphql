@@ -2,6 +2,18 @@
 
 type Query {
   me: User
+  users: [User!]!
+  getUserProfile(id: ID!): User!
+  userSearch(term: String!): [User!]!
+  searchPost(term: String!): [Post!]!
+  post(id: ID!): PostResponse!
+}
+type PostResponse {
+  ok: Boolean!
+  error: String
+  post: Post
+  likes: Int
+  Comments: Int
 }
 
 type Subscription {
@@ -26,6 +38,48 @@ type Mutation {
   ): CreateUserResponse!
   requestLoginSecrete(email: String!): requestLoginSecreteResponse!
   confirmSecretLogin(email: String!, key: String!): confirmSecretLoginRespponse!
+  toggleLike(postId: ID!): toggleLikeResponse!
+  createComment(text: String!, postId: ID): createCommentResponse!
+  deleteComment(commentId: ID!): deleteCommentResponse!
+  followUsers(id: ID!): followUsersResponse!
+  unfollowUsers(id: ID!): unfollowUsersResponse!
+  editProfile(
+    username: String
+    email: String
+    firstName: String
+    lastName: String
+    avatar: String
+    bio: String
+  ): editProfileResponse!
+}
+
+type editProfileResponse {
+  ok: Boolean
+  error: String
+  user: User
+}
+type followUsersResponse {
+  ok: Boolean
+  error: String
+}
+type unfollowUsersResponse {
+  ok: Boolean
+  error: String
+}
+type deleteCommentResponse {
+  ok: Boolean
+  error: String
+}
+
+type createCommentResponse {
+  ok: Boolean!
+  error: String
+  comment: Comment
+}
+
+type toggleLikeResponse {
+  ok: Boolean!
+  error: String
 }
 
 type confirmSecretLoginRespponse {

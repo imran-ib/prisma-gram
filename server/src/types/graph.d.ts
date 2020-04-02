@@ -91,6 +91,13 @@ export type ConfirmSecretLoginRespponse = {
   token?: Maybe<Scalars['String']>;
 };
 
+export type CreateCommentResponse = {
+   __typename?: 'createCommentResponse';
+  ok: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
+  comment?: Maybe<Comment>;
+};
+
 export type CreateUserResponse = {
    __typename?: 'CreateUserResponse';
   ok: Scalars['Boolean'];
@@ -99,12 +106,25 @@ export type CreateUserResponse = {
 };
 
 
+export type DeleteCommentResponse = {
+   __typename?: 'deleteCommentResponse';
+  ok?: Maybe<Scalars['Boolean']>;
+  error?: Maybe<Scalars['String']>;
+};
+
 export type DriversSubscriptionPayload = {
    __typename?: 'DriversSubscriptionPayload';
   mutation?: Maybe<MutationType>;
   node?: Maybe<User>;
   updatedFields?: Maybe<Array<Scalars['String']>>;
   previousValues?: Maybe<UserPreviousValues>;
+};
+
+export type EditProfileResponse = {
+   __typename?: 'editProfileResponse';
+  ok?: Maybe<Scalars['Boolean']>;
+  error?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
 };
 
 export type File = Node & {
@@ -176,6 +196,12 @@ export type FileWhereInput = {
   updatedAt_gt?: Maybe<Scalars['DateTime']>;
   updatedAt_gte?: Maybe<Scalars['DateTime']>;
   post?: Maybe<PostWhereInput>;
+};
+
+export type FollowUsersResponse = {
+   __typename?: 'followUsersResponse';
+  ok?: Maybe<Scalars['Boolean']>;
+  error?: Maybe<Scalars['String']>;
 };
 
 export type Like = Node & {
@@ -314,6 +340,12 @@ export type Mutation = {
   createUser: CreateUserResponse;
   requestLoginSecrete: RequestLoginSecreteResponse;
   confirmSecretLogin: ConfirmSecretLoginRespponse;
+  toggleLike: ToggleLikeResponse;
+  createComment: CreateCommentResponse;
+  deleteComment: DeleteCommentResponse;
+  followUsers: FollowUsersResponse;
+  unfollowUsers: UnfollowUsersResponse;
+  editProfile: EditProfileResponse;
 };
 
 
@@ -335,6 +367,42 @@ export type MutationRequestLoginSecreteArgs = {
 export type MutationConfirmSecretLoginArgs = {
   email: Scalars['String'];
   key: Scalars['String'];
+};
+
+
+export type MutationToggleLikeArgs = {
+  postId: Scalars['ID'];
+};
+
+
+export type MutationCreateCommentArgs = {
+  text: Scalars['String'];
+  postId?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationDeleteCommentArgs = {
+  commentId: Scalars['ID'];
+};
+
+
+export type MutationFollowUsersArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationUnfollowUsersArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationEditProfileArgs = {
+  username?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
 };
 
 export enum MutationType {
@@ -405,6 +473,15 @@ export enum PostOrderByInput {
   UpdatedAtAsc = 'updatedAt_ASC',
   UpdatedAtDesc = 'updatedAt_DESC'
 }
+
+export type PostResponse = {
+   __typename?: 'PostResponse';
+  ok: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
+  post?: Maybe<Post>;
+  likes?: Maybe<Scalars['Int']>;
+  Comments?: Maybe<Scalars['Int']>;
+};
 
 export type PostWhereInput = {
   AND?: Maybe<Array<PostWhereInput>>;
@@ -483,6 +560,31 @@ export type PostWhereInput = {
 export type Query = {
    __typename?: 'Query';
   me?: Maybe<User>;
+  users: Array<User>;
+  getUserProfile: User;
+  userSearch: Array<User>;
+  searchPost: Array<Post>;
+  post: PostResponse;
+};
+
+
+export type QueryGetUserProfileArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryUserSearchArgs = {
+  term: Scalars['String'];
+};
+
+
+export type QuerySearchPostArgs = {
+  term: Scalars['String'];
+};
+
+
+export type QueryPostArgs = {
+  id: Scalars['ID'];
 };
 
 export type RequestLoginSecreteResponse = {
@@ -576,6 +678,18 @@ export type RoomWhereInput = {
 export type Subscription = {
    __typename?: 'Subscription';
   DriversSubscriptions?: Maybe<DriversSubscriptionPayload>;
+};
+
+export type ToggleLikeResponse = {
+   __typename?: 'toggleLikeResponse';
+  ok: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
+};
+
+export type UnfollowUsersResponse = {
+   __typename?: 'unfollowUsersResponse';
+  ok?: Maybe<Scalars['Boolean']>;
+  error?: Maybe<Scalars['String']>;
 };
 
 export type User = Node & {
@@ -953,11 +1067,18 @@ export type ResolversTypes = {
   Room: ResolverTypeWrapper<Room>,
   MessageOrderByInput: MessageOrderByInput,
   Message: ResolverTypeWrapper<Message>,
+  PostResponse: ResolverTypeWrapper<PostResponse>,
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   Mutation: ResolverTypeWrapper<{}>,
   CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>,
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   requestLoginSecreteResponse: ResolverTypeWrapper<RequestLoginSecreteResponse>,
   confirmSecretLoginRespponse: ResolverTypeWrapper<ConfirmSecretLoginRespponse>,
+  toggleLikeResponse: ResolverTypeWrapper<ToggleLikeResponse>,
+  createCommentResponse: ResolverTypeWrapper<CreateCommentResponse>,
+  deleteCommentResponse: ResolverTypeWrapper<DeleteCommentResponse>,
+  followUsersResponse: ResolverTypeWrapper<FollowUsersResponse>,
+  unfollowUsersResponse: ResolverTypeWrapper<UnfollowUsersResponse>,
+  editProfileResponse: ResolverTypeWrapper<EditProfileResponse>,
   Subscription: ResolverTypeWrapper<{}>,
   DriversSubscriptionPayload: ResolverTypeWrapper<DriversSubscriptionPayload>,
   MutationType: MutationType,
@@ -993,11 +1114,18 @@ export type ResolversParentTypes = {
   Room: Room,
   MessageOrderByInput: MessageOrderByInput,
   Message: Message,
+  PostResponse: PostResponse,
+  Boolean: Scalars['Boolean'],
   Mutation: {},
   CreateUserResponse: CreateUserResponse,
-  Boolean: Scalars['Boolean'],
   requestLoginSecreteResponse: RequestLoginSecreteResponse,
   confirmSecretLoginRespponse: ConfirmSecretLoginRespponse,
+  toggleLikeResponse: ToggleLikeResponse,
+  createCommentResponse: CreateCommentResponse,
+  deleteCommentResponse: DeleteCommentResponse,
+  followUsersResponse: FollowUsersResponse,
+  unfollowUsersResponse: UnfollowUsersResponse,
+  editProfileResponse: EditProfileResponse,
   Subscription: {},
   DriversSubscriptionPayload: DriversSubscriptionPayload,
   MutationType: MutationType,
@@ -1021,6 +1149,13 @@ export type ConfirmSecretLoginRespponseResolvers<ContextType = any, ParentType e
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
+export type CreateCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['createCommentResponse'] = ResolversParentTypes['createCommentResponse']> = {
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  comment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
 export type CreateUserResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateUserResponse'] = ResolversParentTypes['CreateUserResponse']> = {
   ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
@@ -1032,11 +1167,24 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime'
 }
 
+export type DeleteCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['deleteCommentResponse'] = ResolversParentTypes['deleteCommentResponse']> = {
+  ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
 export type DriversSubscriptionPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DriversSubscriptionPayload'] = ResolversParentTypes['DriversSubscriptionPayload']> = {
   mutation?: Resolver<Maybe<ResolversTypes['MutationType']>, ParentType, ContextType>,
   node?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
   updatedFields?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>,
   previousValues?: Resolver<Maybe<ResolversTypes['UserPreviousValues']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export type EditProfileResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['editProfileResponse'] = ResolversParentTypes['editProfileResponse']> = {
+  ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
@@ -1046,6 +1194,12 @@ export type FileResolvers<ContextType = any, ParentType extends ResolversParentT
   post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>,
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export type FollowUsersResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['followUsersResponse'] = ResolversParentTypes['followUsersResponse']> = {
+  ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
@@ -1073,6 +1227,12 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createUser?: Resolver<ResolversTypes['CreateUserResponse'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'username' | 'email'>>,
   requestLoginSecrete?: Resolver<ResolversTypes['requestLoginSecreteResponse'], ParentType, ContextType, RequireFields<MutationRequestLoginSecreteArgs, 'email'>>,
   confirmSecretLogin?: Resolver<ResolversTypes['confirmSecretLoginRespponse'], ParentType, ContextType, RequireFields<MutationConfirmSecretLoginArgs, 'email' | 'key'>>,
+  toggleLike?: Resolver<ResolversTypes['toggleLikeResponse'], ParentType, ContextType, RequireFields<MutationToggleLikeArgs, 'postId'>>,
+  createComment?: Resolver<ResolversTypes['createCommentResponse'], ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'text'>>,
+  deleteComment?: Resolver<ResolversTypes['deleteCommentResponse'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'commentId'>>,
+  followUsers?: Resolver<ResolversTypes['followUsersResponse'], ParentType, ContextType, RequireFields<MutationFollowUsersArgs, 'id'>>,
+  unfollowUsers?: Resolver<ResolversTypes['unfollowUsersResponse'], ParentType, ContextType, RequireFields<MutationUnfollowUsersArgs, 'id'>>,
+  editProfile?: Resolver<ResolversTypes['editProfileResponse'], ParentType, ContextType, RequireFields<MutationEditProfileArgs, never>>,
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
@@ -1093,8 +1253,22 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
+export type PostResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['PostResponse'] = ResolversParentTypes['PostResponse']> = {
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>,
+  likes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
+  Comments?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>,
+  getUserProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserProfileArgs, 'id'>>,
+  userSearch?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserSearchArgs, 'term'>>,
+  searchPost?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QuerySearchPostArgs, 'term'>>,
+  post?: Resolver<ResolversTypes['PostResponse'], ParentType, ContextType, RequireFields<QueryPostArgs, 'id'>>,
 };
 
 export type RequestLoginSecreteResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['requestLoginSecreteResponse'] = ResolversParentTypes['requestLoginSecreteResponse']> = {
@@ -1114,6 +1288,18 @@ export type RoomResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   DriversSubscriptions?: SubscriptionResolver<Maybe<ResolversTypes['DriversSubscriptionPayload']>, "DriversSubscriptions", ParentType, ContextType>,
+};
+
+export type ToggleLikeResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['toggleLikeResponse'] = ResolversParentTypes['toggleLikeResponse']> = {
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export type UnfollowUsersResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['unfollowUsersResponse'] = ResolversParentTypes['unfollowUsersResponse']> = {
+  ok?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -1153,19 +1339,26 @@ export type UserPreviousValuesResolvers<ContextType = any, ParentType extends Re
 export type Resolvers<ContextType = any> = {
   Comment?: CommentResolvers<ContextType>,
   confirmSecretLoginRespponse?: ConfirmSecretLoginRespponseResolvers<ContextType>,
+  createCommentResponse?: CreateCommentResponseResolvers<ContextType>,
   CreateUserResponse?: CreateUserResponseResolvers<ContextType>,
   DateTime?: GraphQLScalarType,
+  deleteCommentResponse?: DeleteCommentResponseResolvers<ContextType>,
   DriversSubscriptionPayload?: DriversSubscriptionPayloadResolvers<ContextType>,
+  editProfileResponse?: EditProfileResponseResolvers<ContextType>,
   File?: FileResolvers<ContextType>,
+  followUsersResponse?: FollowUsersResponseResolvers<ContextType>,
   Like?: LikeResolvers<ContextType>,
   Message?: MessageResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Node?: NodeResolvers,
   Post?: PostResolvers<ContextType>,
+  PostResponse?: PostResponseResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   requestLoginSecreteResponse?: RequestLoginSecreteResponseResolvers<ContextType>,
   Room?: RoomResolvers<ContextType>,
   Subscription?: SubscriptionResolvers<ContextType>,
+  toggleLikeResponse?: ToggleLikeResponseResolvers<ContextType>,
+  unfollowUsersResponse?: UnfollowUsersResponseResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
   UserPreviousValues?: UserPreviousValuesResolvers<ContextType>,
 };

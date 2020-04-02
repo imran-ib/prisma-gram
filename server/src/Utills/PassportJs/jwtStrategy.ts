@@ -8,7 +8,7 @@ const JwtOptions = {
 };
 const veryfyUser = async (payload, done) => {
   try {
-    const User = await prisma.user({ id: payload.id });
+    const [User] = await prisma.users({ where: { id: payload.id } });
     if (User !== null) {
       return done(null, User);
     } else {
